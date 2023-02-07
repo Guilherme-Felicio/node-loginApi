@@ -5,8 +5,8 @@ export interface HttpRequest {
 }
 
 class AuthUseCase {
-  auth(email: string, password: string) {
-    //
+  auth(email: string, password: string): string {
+    return "";
   }
 }
 
@@ -17,7 +17,7 @@ class LoginRouter {
     this.authUseCase = authUseCase;
   }
 
-  route(httpRequest: HttpRequest | undefined) {
+  route(httpRequest: HttpRequest): { statusCode: number; body?: unknown } {
     if (
       !httpRequest ||
       !httpRequest.body ||
@@ -35,8 +35,9 @@ class LoginRouter {
       return HttpResponse.badRequest("password");
     }
 
-    this.authUseCase.auth(email, password);
-    return HttpResponse.UnauthorizedError();
+    const accessToken = this.authUseCase.auth(email, password);
+    if (!accessToken) return HttpResponse.UnauthorizedError();
+    return HttpResponse.ok();
   }
 }
 
