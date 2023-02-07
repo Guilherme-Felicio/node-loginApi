@@ -1,4 +1,5 @@
 import MissingParamError from "../helpers/missing-param-error";
+import UnauthorizedError from "../helpers/unauthorized-error";
 import LoginRouter, { HttpRequest } from "./login-router";
 
 const makeSut = () => {
@@ -80,5 +81,6 @@ describe("Login router", () => {
     };
     const httpResponse = sut.route(httpRequest);
     expect(httpResponse?.statusCode).toBe(401);
+    expect(httpResponse?.body).toEqual(new UnauthorizedError());
   });
 });
