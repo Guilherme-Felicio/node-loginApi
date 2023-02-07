@@ -5,7 +5,7 @@ export interface HttpRequest {
 }
 
 class AuthUseCase {
-  auth(email: string, password: string): string {
+  async auth(email: string, password: string): Promise<string> {
     return "";
   }
 }
@@ -17,7 +17,9 @@ class LoginRouter {
     this.authUseCase = authUseCase;
   }
 
-  route(httpRequest: HttpRequest): { statusCode: number; body?: any } {
+  async route(
+    httpRequest: HttpRequest
+  ): Promise<{ statusCode: number; body?: any }> {
     try {
       const { email, password } = httpRequest.body;
       if (!email) {
@@ -27,7 +29,7 @@ class LoginRouter {
         return HttpResponse.badRequest("password");
       }
 
-      const accessToken = this.authUseCase.auth(email, password);
+      const accessToken = await this.authUseCase.auth(email, password);
       if (!accessToken) return HttpResponse.UnauthorizedError();
       return HttpResponse.ok({ accessToken });
     } catch (err) {
