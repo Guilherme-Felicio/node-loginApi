@@ -18,7 +18,12 @@ class LoginRouter {
   }
 
   route(httpRequest: HttpRequest | undefined) {
-    if (!httpRequest || !httpRequest.body) {
+    if (
+      !httpRequest ||
+      !httpRequest.body ||
+      !this.authUseCase ||
+      !this.authUseCase.auth
+    ) {
       return HttpResponse.serverError();
     }
 
@@ -29,6 +34,7 @@ class LoginRouter {
     if (!password) {
       return HttpResponse.badRequest("password");
     }
+
     this.authUseCase.auth(email, password);
     return HttpResponse.UnauthorizedError();
   }

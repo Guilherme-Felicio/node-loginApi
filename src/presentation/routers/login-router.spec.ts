@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import MissingParamError from "../helpers/missing-param-error";
 import UnauthorizedError from "../helpers/unauthorized-error";
 import LoginRouter, { HttpRequest } from "./login-router";
@@ -71,7 +72,7 @@ describe("Login router", () => {
     expect(authUseCaseSpy.password).toBe(httpRequest.body.password);
   });
 
-  test("Should return 401 when invalid credentials are providaded", () => {
+  test("Should return 401 when invalid credentials are provided", () => {
     const { sut } = makeSut();
     const httpRequest: HttpRequest = {
       body: {
@@ -82,5 +83,32 @@ describe("Login router", () => {
     const httpResponse = sut.route(httpRequest);
     expect(httpResponse?.statusCode).toBe(401);
     expect(httpResponse?.body).toEqual(new UnauthorizedError());
+  });
+
+  test("Should return 500 if no authUseCase is provided", () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const sut = new LoginRouter();
+    const httpRequest: HttpRequest = {
+      body: {
+        email: "any_email@email.com",
+        password: "any_password",
+      },
+    };
+    const httpResponse = sut.route(httpRequest);
+    expect(httpResponse?.statusCode).toBe(500);
+  });
+
+  test("Should return 500 if authUseCase has no auth method", () => {
+    // @ts-ignore
+    const sut = new LoginRouter({});
+    const httpRequest: HttpRequest = {
+      body: {
+        email: "any_email@email.com",
+        password: "any_password",
+      },
+    };
+    const httpResponse = sut.route(httpRequest);
+    expect(httpResponse?.statusCode).toBe(500);
   });
 });
