@@ -17,7 +17,7 @@ class LoginRouter {
     this.authUseCase = authUseCase;
   }
 
-  route(httpRequest: HttpRequest): { statusCode: number; body?: unknown } {
+  route(httpRequest: HttpRequest): { statusCode: number; body?: any } {
     if (
       !httpRequest ||
       !httpRequest.body ||
@@ -37,7 +37,7 @@ class LoginRouter {
 
     const accessToken = this.authUseCase.auth(email, password);
     if (!accessToken) return HttpResponse.UnauthorizedError();
-    return HttpResponse.ok();
+    return HttpResponse.ok({ accessToken });
   }
 }
 

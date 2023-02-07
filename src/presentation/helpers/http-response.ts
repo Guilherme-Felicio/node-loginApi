@@ -23,9 +23,10 @@ class HttpResponse {
     };
   }
 
-  static ok() {
+  static ok(data: unknown) {
     return {
       statusCode: 200,
+      body: data,
     };
   }
 }
