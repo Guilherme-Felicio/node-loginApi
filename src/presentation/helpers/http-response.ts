@@ -1,4 +1,5 @@
 import MissingParamError from "./missing-param-error";
+import ServerError from "./server-error";
 import UnauthorizedError from "./unauthorized-error";
 
 class HttpResponse {
@@ -12,7 +13,7 @@ class HttpResponse {
   static serverError() {
     return {
       statusCode: 500,
-      body: new MissingParamError("test"),
+      body: new ServerError(),
     };
   }
 
