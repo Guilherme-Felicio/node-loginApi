@@ -1,11 +1,5 @@
 import validator from "../__mocks__/validator";
 
-class EmailValidator {
-  isValid(email: string) {
-    return validator.isEmail(email);
-  }
-}
-
 const makeSut = () => {
   return new EmailValidator();
 };
@@ -22,5 +16,11 @@ describe("Email validators tests", () => {
     const sut = makeSut();
     const isEmailValid = sut.isValid("@@@@email.com");
     expect(isEmailValid).toBe(false);
+  });
+
+  test("should call validator with correct email", () => {
+    const sut = makeSut();
+    sut.isValid("anyemail@email.com");
+    expect(validator.email).toBe("anyemail@email.com");
   });
 });
