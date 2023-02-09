@@ -31,6 +31,18 @@ const makeEmailValidator = () => {
   return emailValidorSpy;
 };
 
+const makeEmailValidatorWithError = () => {
+  class EmailValidorSpy {
+    isEmailValid: boolean | undefined;
+
+    isValid(email: string) {
+      throw new Error();
+    }
+  }
+
+  return new EmailValidorSpy();
+};
+
 const makeAuthUseCaseWithError = () => {
   class AuthUseCaseSpy {
     async auth() {
@@ -195,5 +207,53 @@ describe("Login router", () => {
     const httpResponse = await sut.route(httpRequest);
     expect(httpResponse?.statusCode).toBe(400);
     expect(httpResponse?.body).toEqual(new InvalidParamError("email"));
+  });
+
+  test("Should return 500 if no emailValidator is provided", async () => {
+    const authUseCaseSpy = makeAuthUseCaseSpy();
+
+    // @ts-ignore
+    const sut = new LoginRouter(authUseCaseSpy);
+    const httpRequest: HttpRequest = {
+      body: {
+        email: "any_email@email.com",
+        password: "any_password",
+      },
+    };
+    const httpResponse = await sut.route(httpRequest);
+    expect(httpResponse?.statusCode).toBe(500);
+    expect(httpResponse?.body).toEqual(new ServerError());
+  });
+
+  test("Should return 500 if no emailValidator has no  isValid", async () => {
+    const authUseCaseSpy = makeAuthUseCaseSpy();
+
+    // @ts-ignore
+    const sut = new LoginRouter(authUseCaseSpy, {});
+    const httpRequest: HttpRequest = {
+      body: {
+        email: "any_email@email.com",
+        password: "any_password",
+      },
+    };
+    const httpResponse = await sut.route(httpRequest);
+    expect(httpResponse?.statusCode).toBe(500);
+    expect(httpResponse?.body).toEqual(new ServerError());
+  });
+
+  test("Should return 500 if emailValidator throws error 500", async () => {
+    const authUseCaseSpy = makeAuthUseCaseWithError();
+    const emailValidatorSpy = makeEmailValidatorWithError();
+    // @ts-ignore
+    const sut = new LoginRouter(authUseCaseSpy, emailValidatorSpy);
+    const httpRequest: HttpRequest = {
+      body: {
+        email: "any_email@email.com",
+        password: "any_password",
+      },
+    };
+    const httpResponse = await sut.route(httpRequest);
+    expect(httpResponse?.statusCode).toBe(500);
+    expect(httpResponse?.body).toEqual(new ServerError());
   });
 });
