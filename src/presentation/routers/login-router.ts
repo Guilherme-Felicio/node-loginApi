@@ -1,4 +1,5 @@
 import HttpResponse from "../helpers/http-response";
+import MissingParamError from "../helpers/missing-param-error";
 
 export interface HttpRequest {
   body: any;
@@ -23,10 +24,11 @@ class LoginRouter {
     try {
       const { email, password } = httpRequest.body;
       if (!email) {
-        return HttpResponse.badRequest("email");
+        return HttpResponse.badRequest(new MissingParamError("email"));
       }
+
       if (!password) {
-        return HttpResponse.badRequest("password");
+        return HttpResponse.badRequest(new MissingParamError("password"));
       }
 
       const accessToken = await this.authUseCase.auth(email, password);

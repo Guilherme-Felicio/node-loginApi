@@ -3,10 +3,10 @@ import ServerError from "./server-error";
 import UnauthorizedError from "./unauthorized-error";
 
 class HttpResponse {
-  static badRequest(paramName: string) {
+  static badRequest(error: Error) {
     return {
       statusCode: 400,
-      body: new MissingParamError(paramName),
+      body: error,
     };
   }
 

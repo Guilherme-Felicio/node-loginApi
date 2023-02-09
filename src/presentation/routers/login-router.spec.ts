@@ -165,4 +165,17 @@ describe("Login router", () => {
     expect(httpResponse?.statusCode).toBe(500);
     expect(httpResponse?.body).toEqual(new ServerError());
   });
+
+  test("Should return 400 if invalid email is provided", async () => {
+    const authUseCaseSpy = makeAuthUseCaseWithError();
+    // @ts-ignore
+    const sut = new LoginRouter(authUseCaseSpy);
+    const httpRequest: HttpRequest = {
+      body: {
+        email: "invalid_email@email.com",
+        password: "any_password",
+      },
+    };
+    const httpResponse = await sut.route(httpRequest);
+  });
 });
