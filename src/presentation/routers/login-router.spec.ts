@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import InvalidParamError from "../helpers/invalid-param-error";
-import MissingParamError from "../helpers/missing-param-error";
-import ServerError from "../helpers/server-error";
-import UnauthorizedError from "../helpers/unauthorized-error";
+import {
+  MissingParamError,
+  ServerError,
+  UnauthorizedError,
+  InvalidParamError,
+} from "../errors/index";
+
 import LoginRouter, { HttpRequest } from "./login-router";
 
 const makeSut = () => {
