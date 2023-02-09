@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import InvalidParamError from "../helpers/invalid-param-error";
 import MissingParamError from "../helpers/missing-param-error";
 import ServerError from "../helpers/server-error";
 import UnauthorizedError from "../helpers/unauthorized-error";
@@ -6,12 +7,28 @@ import LoginRouter, { HttpRequest } from "./login-router";
 
 const makeSut = () => {
   const authUseCaseSpy = makeAuthUseCaseSpy();
+  const emailValidator = makeEmailValidator();
   // @ts-ignore
-  const sut = new LoginRouter(authUseCaseSpy);
+  const sut = new LoginRouter(authUseCaseSpy, emailValidator);
   return {
     sut,
     authUseCaseSpy,
+    emailValidator,
   };
+};
+
+const makeEmailValidator = () => {
+  class EmailValidorSpy {
+    isEmailValid: boolean | undefined;
+
+    isValid(email: string) {
+      return this.isEmailValid;
+    }
+  }
+
+  const emailValidorSpy = new EmailValidorSpy();
+  emailValidorSpy.isEmailValid = true;
+  return emailValidorSpy;
 };
 
 const makeAuthUseCaseWithError = () => {
@@ -167,9 +184,8 @@ describe("Login router", () => {
   });
 
   test("Should return 400 if invalid email is provided", async () => {
-    const authUseCaseSpy = makeAuthUseCaseWithError();
-    // @ts-ignore
-    const sut = new LoginRouter(authUseCaseSpy);
+    const { sut, emailValidator } = makeSut();
+    emailValidator.isEmailValid = false;
     const httpRequest: HttpRequest = {
       body: {
         email: "invalid_email@email.com",
@@ -177,5 +193,7 @@ describe("Login router", () => {
       },
     };
     const httpResponse = await sut.route(httpRequest);
+    expect(httpResponse?.statusCode).toBe(400);
+    expect(httpResponse?.body).toEqual(new InvalidParamError("email"));
   });
 });
