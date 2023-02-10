@@ -4,7 +4,7 @@ import { MissingParamError } from "@/utils/errors";
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 class AuthUseCase {
   async auth(email: string) {
-    if (!email) throw MissingParamError;
+    if (!email) throw new MissingParamError("email");
   }
 }
 
