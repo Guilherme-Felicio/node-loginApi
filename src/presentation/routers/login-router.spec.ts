@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {
-  MissingParamError,
-  ServerError,
-  UnauthorizedError,
-  InvalidParamError,
-} from "../errors/index";
-
+import { MissingParamError, InvalidParamError } from "@/utils/errors";
+import { ServerError, UnauthorizedError } from "../errors/index";
 import LoginRouter, { HttpRequest } from "./login-router";
 
 const makeSut = () => {

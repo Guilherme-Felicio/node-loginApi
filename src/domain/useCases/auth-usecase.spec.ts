@@ -1,9 +1,10 @@
 import HttpResponse from "@/presentation/helpers/http-response";
+import { MissingParamError } from "@/utils/errors";
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 class AuthUseCase {
   async auth(email: string) {
-    if (!email) throw new Error("");
+    if (!email) throw MissingParamError;
   }
 }
 

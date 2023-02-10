@@ -1,5 +1,5 @@
 import HttpResponse from "../helpers/http-response";
-import { InvalidParamError, MissingParamError } from "../errors/index";
+import { InvalidParamError, MissingParamError } from "@/utils/errors";
 
 export interface HttpRequest {
   body: any;
