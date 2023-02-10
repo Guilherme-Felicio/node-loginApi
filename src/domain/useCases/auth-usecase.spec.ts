@@ -16,31 +16,40 @@ class AuthUseCase {
   }
 }
 
+const makeSut = () => {
+  class LoadUserByEmailRepositorySpy {
+    email = "";
+    async load(email: string) {
+      this.email = email;
+    }
+  }
+  const loadUserByEmailRepository = new LoadUserByEmailRepositorySpy();
+  const sut = new AuthUseCase(loadUserByEmailRepository);
+
+  return {
+    sut,
+    loadUserByEmailRepository,
+  };
+};
+
 describe("Auth usecase", () => {
   test("should throw if no email is provided", async () => {
-    const sut = new AuthUseCase();
+    const { sut } = makeSut();
     // @ts-ignore
     const promise = sut.auth();
     expect(promise).rejects.toThrow();
   });
 
   test("should throw if no password is provided", async () => {
-    const sut = new AuthUseCase();
+    const { sut } = makeSut();
     // @ts-ignore
     const promise = sut.auth("anyEmail@email.com");
     expect(promise).rejects.toThrow();
   });
 
   test("should call loadUserByEmailRepository with correct email", async () => {
-    class LoadUserByEmailRepositorySpy {
-      email = "";
-      async load(email: string) {
-        this.email = email;
-      }
-    }
-    const loadUserByEmailRepository = new LoadUserByEmailRepositorySpy();
+    const { sut, loadUserByEmailRepository } = makeSut();
 
-    const sut = new AuthUseCase(loadUserByEmailRepository);
     await sut.auth("anyEmail@email.com", "password");
     expect(loadUserByEmailRepository.email).toBe("anyEmail@email.com");
   });
