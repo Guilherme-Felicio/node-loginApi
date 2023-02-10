@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-const validator = {
+
+const mockedValidator = {
   isEmailValid: true,
   email: "",
   isEmail: function (email: string) {
@@ -8,4 +9,4 @@ const validator = {
   },
 };
 
-export default validator;
+export default mockedValidator;
